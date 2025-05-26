@@ -13,7 +13,9 @@ import java.util.List;
 @Slf4j
 @RestController
 public class NoteController {
+
     private final NoteService noteService;
+
 
     public NoteController(NoteService noteService) {
         this.noteService = noteService;
