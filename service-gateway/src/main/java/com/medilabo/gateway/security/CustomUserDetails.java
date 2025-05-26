@@ -5,11 +5,10 @@ import com.medilabo.gateway.repository.UserRepository;
 import jakarta.annotation.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Optional;
-
 public class CustomUserDetails implements UserDetails {
     private UserRepository userRepository;
 
@@ -26,8 +25,8 @@ public class CustomUserDetails implements UserDetails {
 
     @Nullable
     public User getUser() {
-        Optional<User> user = userRepository.findById(this.userId);
-        return user.orElse(null);
+        Mono<User> user = userRepository.findById(this.userId);
+        return user.block();
     }
 
     public int getId() { return userId; }

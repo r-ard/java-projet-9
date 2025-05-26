@@ -1,23 +1,31 @@
 package com.medilabo.gateway.config;
 
 import com.medilabo.gateway.service.CustomUserDetailsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.stereotype.Component;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.RedirectServerAuthenticationFailureHandler;
+import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler;
+import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler;
 
+import java.net.URI;
+
+@Slf4j
 @Configuration
-@Component
+@EnableWebFluxSecurity
 public class SecurityConfig {
 
-    private final CustomUserDetailsService userDetailsService;
-
     public SecurityConfig(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+
     }
 
     @Bean
@@ -26,36 +34,32 @@ public class SecurityConfig {
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authenticationProvider(this.authenticationProvider());
-
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/front/login", "/front/css/**", "/front/images/**", "/front/js/**").permitAll()
-                        .anyRequest().authenticated()
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(exchangeSpec -> exchangeSpec
+                        .pathMatchers("/front-service/login", "/front-service/css/**", "/front-service/images/**", "/front-service/js/**").permitAll()
+                        .anyExchange().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/front/login")
-                        .usernameParameter("username")
-                        .passwordParameter("password")
-                        .defaultSuccessUrl("/front/dashboard", true)
-                        .permitAll()
+                        .authenticationSuccessHandler((webFilterExchange, authentication) -> {
+                            log.info("Login success for : {}", authentication.getName());
+                            return new RedirectServerAuthenticationSuccessHandler("/front/dashboard")
+                                    .onAuthenticationSuccess(webFilterExchange, authentication);
+                        })
+                        .authenticationFailureHandler((webFilterExchange, exception) -> {
+                            log.info("Login failed");
+                            return new RedirectServerAuthenticationFailureHandler("/front/login")
+                                    .onAuthenticationFailure(webFilterExchange, exception);
+                        })
                 )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
-                );
+                .logout(logout -> {
+                    RedirectServerLogoutSuccessHandler logoutSuccessHandler = new RedirectServerLogoutSuccessHandler();
+                    logoutSuccessHandler.setLogoutSuccessUrl(URI.create("/front/login"));
+                    logout.logoutUrl("/logout")
+                            .logoutSuccessHandler(logoutSuccessHandler);
+                });
 
         return http.build();
     }

@@ -3,13 +3,14 @@ package com.medilabo.gateway.service;
 import com.medilabo.gateway.model.User;
 import com.medilabo.gateway.repository.UserRepository;
 import com.medilabo.gateway.security.CustomUserDetails;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class CustomUserDetailsService implements ReactiveUserDetailsService {
     private UserRepository userRepository;
 
     public CustomUserDetailsService(UserRepository userRepository) {
@@ -17,13 +18,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+    public Mono<UserDetails> findByUsername(String username) {
+        Mono<User> userPromise = userRepository.findByUsername(username);
 
-        if(user == null) {
-            throw new UsernameNotFoundException("User not found with following username/email : '" + username + "'");
-        }
-
-        return new CustomUserDetails(user.getId(), userRepository);
+        return userPromise.map(user -> {
+            UserDetails outDetails = new CustomUserDetails(user.getId(), userRepository);
+            return outDetails;
+        }).switchIfEmpty(Mono.error(new UsernameNotFoundException("User not found with following username/email : '" + username + "'")));
     }
 }

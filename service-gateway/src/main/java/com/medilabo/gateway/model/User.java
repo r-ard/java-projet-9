@@ -1,17 +1,12 @@
 package com.medilabo.gateway.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.Collection;
-
-@Entity
 @Table(name = "users")
 @Data
 @AllArgsConstructor
@@ -21,11 +16,11 @@ public class User {
     @Column
     private int id;
 
-    @Column(name = "last_name")
-    private String lastName;
+    @Column
+    private String first_name;
 
-    @Column(name = "first_name")
-    private String firstName;
+    @Column
+    private String last_name;
 
     @Column
     private String username;
