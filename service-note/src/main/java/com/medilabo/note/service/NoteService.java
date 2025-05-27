@@ -7,6 +7,7 @@ import com.medilabo.note.model.Note;
 import com.medilabo.note.repository.NoteRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,7 @@ public class NoteService {
 
     public NoteDAO createNote(NoteDAO dao) {
         Note entity = toEntity(dao);
+        entity.setDate(LocalDate.now());
         entity = noteRepository.save(entity);
         return toDAO(entity);
     }

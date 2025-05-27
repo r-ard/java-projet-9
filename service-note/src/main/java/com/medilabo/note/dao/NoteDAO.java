@@ -22,7 +22,6 @@ public class NoteDAO {
     @NotEmpty(message = "Content is mandatory")
     private String content;
 
-    @NotNull(message = "Birth date is mandatory")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 }
