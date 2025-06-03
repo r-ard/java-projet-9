@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{layout/head.html}"></head>
+    <body>
+        <div class="container p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1>Liste des patients</h1>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</button>
+                </form>
+            </div>
+            <table class="table table-striped table-borderless" th:if="${patients.size() > 0}">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Date de naissance</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="patient : ${patients}">
+                    <td th:text="${patient.getLastName()}"></td>
+                    <td th:text="${patient.getFirstName()}"></td>
+                    <td th:text="${#temporals.format(patient.getBirthDate(), 'dd/MM/yyyy')}"></td>
+                    <td class="btn-td">
+                        <a class="btn btn-success me-3" th:href="@{|/service-front/patients/inspect/${patient.getId()}|}"><i class="fas fa-info-circle fa-lg me-2"></i>Consulter</a>
+                        <a class="btn btn-primary me-3" th:href="@{|/service-front/patients/update/${patient.getId()}|}"><i class="fas fa-edit fa-lg me-2"></i>Modifier</a>
+                        <a class="btn btn-danger" th:href="@{|/microservice-front/patient/delete/${patient.getId()}|}"><i class="fas fa-trash-alt fa-lg me-2"></i>Supprimer</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-center">
+                        <a href="/service-front/patients/create">
+                            <button type="button" class="btn btn-secondary"><i class="fas fa-plus-circle me-2"></i>Créer un nouveau patient</button>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div th:if="${patients.size() == 0}">
+                <p class="h5" >Pas de patient.</p>
+                <a href="/service-front/patients/create" class="my-5">
+                    <button type="button" class="btn btn-secondary"><i class="fas fa-plus-circle me-2"></i>Créer un nouveau patient</button>
+                </a>
+            </div>
+        </div>
+    </body>
+</html>

@@ -4,9 +4,6 @@ import com.medilabo.gateway.service.CustomUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,6 +13,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationFailureHandler;
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler;
+import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
@@ -38,12 +36,13 @@ public class SecurityConfig {
         http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchangeSpec -> exchangeSpec
-                        .pathMatchers("/service-front/login", "/service-front/css/**", "/service-front/images/**", "/service-front/js/**").permitAll()
+                        .pathMatchers("/service-front/login", "/service-front/style.css").permitAll()
                         .anyExchange().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/service-front/login")
                         .authenticationSuccessHandler((webFilterExchange, authentication) -> {
+
                             log.info("Login success for : {}", authentication.getName());
                             return new RedirectServerAuthenticationSuccessHandler("/service-front/patients")
                                     .onAuthenticationSuccess(webFilterExchange, authentication);
