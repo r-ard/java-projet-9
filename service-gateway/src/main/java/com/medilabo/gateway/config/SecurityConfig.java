@@ -38,25 +38,25 @@ public class SecurityConfig {
         http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchangeSpec -> exchangeSpec
-                        .pathMatchers("/front-service/login", "/front-service/css/**", "/front-service/images/**", "/front-service/js/**").permitAll()
+                        .pathMatchers("/service-front/login", "/service-front/css/**", "/service-front/images/**", "/service-front/js/**").permitAll()
                         .anyExchange().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/front/login")
+                        .loginPage("/service-front/login")
                         .authenticationSuccessHandler((webFilterExchange, authentication) -> {
                             log.info("Login success for : {}", authentication.getName());
-                            return new RedirectServerAuthenticationSuccessHandler("/front/dashboard")
+                            return new RedirectServerAuthenticationSuccessHandler("/service-front/patients")
                                     .onAuthenticationSuccess(webFilterExchange, authentication);
                         })
                         .authenticationFailureHandler((webFilterExchange, exception) -> {
                             log.info("Login failed");
-                            return new RedirectServerAuthenticationFailureHandler("/front/login")
+                            return new RedirectServerAuthenticationFailureHandler("/service-front/login")
                                     .onAuthenticationFailure(webFilterExchange, exception);
                         })
                 )
                 .logout(logout -> {
                     RedirectServerLogoutSuccessHandler logoutSuccessHandler = new RedirectServerLogoutSuccessHandler();
-                    logoutSuccessHandler.setLogoutSuccessUrl(URI.create("/front/login"));
+                    logoutSuccessHandler.setLogoutSuccessUrl(URI.create("/service-front/login"));
                     logout.logoutUrl("/logout")
                             .logoutSuccessHandler(logoutSuccessHandler);
                 });
