@@ -1,0 +1,6 @@
+<div th:fragment="navbar" class="d-flex justify-content-between align-items-center mb-3">
+    <h1 th:text="${pageTitle}"></h1>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" class="btn btn-danger">Déconnexion</button>
+    </form>
+</div>

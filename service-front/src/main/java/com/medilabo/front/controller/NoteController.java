@@ -87,6 +87,7 @@ public class NoteController {
 
         model.addAttribute("pageTitle", "Mettre à jour une note");
         model.addAttribute("note", note);
+        model.addAttribute("patientId", note.getPatientId());
 
         return "note/update";
     }

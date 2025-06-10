@@ -13,3 +13,16 @@
     justify-content: flex-start;
     align-items: center;
 }
+
+.auth-wrapper {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-card {
+    border-radius: 10px;
+    box-shadow: 0 0 4px #aaa;
+}

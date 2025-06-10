@@ -39,7 +39,7 @@ public class PatientController {
 
     @GetMapping("/patients")
     public String patientsView(Model model) {
-        model.addAttribute("pageTitle", "Aperçu patients");
+        model.addAttribute("pageTitle", "Liste des patients");
         model.addAttribute("patients", patientServiceProxy.getPatients());
         return "patient/index";
     }
