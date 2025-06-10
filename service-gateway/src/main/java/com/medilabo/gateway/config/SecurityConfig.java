@@ -36,7 +36,7 @@ public class SecurityConfig {
         http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchangeSpec -> exchangeSpec
-                        .pathMatchers("/service-front/login", "/service-front/style.css").permitAll()
+                        .pathMatchers("/service-front/login", "/login", "/service-front/style.css").permitAll()
                         .anyExchange().authenticated()
                 )
                 .formLogin(form -> form

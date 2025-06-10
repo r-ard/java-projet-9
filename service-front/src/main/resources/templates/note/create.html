@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{layout/head.html}"></head>
+    <body>
+        <div class="container p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1>Créer une note</h1>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</button>
+                </form>
+            </div>
+            <form th:action="@{|/service-front/notes/create/${patient.getId()}|}" th:object="${note}"  method="post" class="form-horizontal">
+                <div class="mb-3">
+                    <label for="content" class="form-label">Contenu</label>
+                    <textarea class="form-control" id="content" name="content" placeholder="Contenu"></textarea>
+                    <small class="error" th:errors="*{content}" th:if="${#fields.hasErrors('content')}"></small>
+                </div>
+                <div class="mb-5">
+                    <label for="date" class="form-label">Date du rendez-vous</label>
+                    <input type="date" class="form-control" id="date" name="date" th:field="*{date}">
+                    <small class="error" th:errors="*{date}" th:if="${#fields.hasErrors('date')}"></small>
+                </div>
+                <div class="text-center">
+                    <a class="btn btn-secondary me-2" th:href="@{|/service-front/patients/inspect/${patient.getId()}}"><i class="fas fa-times me-2"></i>Annuler</a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check me-2"></i>
+                        <span>Valider</span>
+                    </button>
+                </div>
+            </form>
+            <div th:replace="~{layout/error-message.html}"></div>
+        </div>
+        <script th:replace="~{layout/date-fixer.html}"></script>
+    </body>
+</html>

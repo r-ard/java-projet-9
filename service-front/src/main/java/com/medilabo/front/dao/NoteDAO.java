@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -15,12 +16,9 @@ import java.time.LocalDate;
 public class NoteDAO {
     private String id;
 
-    @NotNull
-    private Integer patientId;
-
     @NotEmpty(message = "Content is mandatory")
     private String content;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 }

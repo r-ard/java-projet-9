@@ -22,6 +22,8 @@ public class CustomUserDetailsService implements ReactiveUserDetailsService {
     public Mono<UserDetails> findByUsername(String username) {
         Mono<User> userPromise = userRepository.findByUsername(username);
 
+        log.info("Try to found user : " + username);
+
         return userPromise.map(user -> {
             log.info("Found user to authenticate : " + username);
 

@@ -96,7 +96,7 @@ public class DiabetesRiskService {
         for(NoteBean note : notes) {
             String cleanedContent = StringUtils.getHTMLStringContent(note.getContent());
 
-            String[] explodedContent = cleanedContent.split(" ");
+            String[] explodedContent = cleanedContent.split("[ ,;]+");
             for(String contentWord : explodedContent) {
                 String loweredWord = contentWord.toLowerCase();
 

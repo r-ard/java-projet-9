@@ -50,7 +50,8 @@ public class NoteService {
 
     public NoteDAO createNote(NoteDAO dao) {
         Note entity = toEntity(dao);
-        entity.setDate(LocalDate.now());
+        entity.setId(null);
+        entity.setDate(entity.getDate() != null ? entity.getDate() : LocalDate.now());
         entity = noteRepository.save(entity);
         return toDAO(entity);
     }
@@ -58,9 +59,11 @@ public class NoteService {
     public NoteDAO updateNote(NoteDAO dao) throws NoteNotFoundException {
         Note existingNote = noteRepository.findById(dao.getId()).orElseThrow(() -> new NoteNotFoundException(dao.getId()));
 
-        existingNote.setPatientId(dao.getPatientId());
         existingNote.setContent(dao.getContent());
-        existingNote.setDate(dao.getDate());
+
+        if(dao.getDate() != null) {
+            existingNote.setDate(dao.getDate());
+        }
 
         Note updatedNote = noteRepository.save(existingNote);
         return toDAO(updatedNote);

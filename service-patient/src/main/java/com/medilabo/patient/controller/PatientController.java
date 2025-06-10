@@ -3,6 +3,7 @@ package com.medilabo.patient.controller;
 import com.medilabo.patient.dao.PatientDAO;
 import com.medilabo.patient.exception.PatientNotFoundException;
 import com.medilabo.patient.service.PatientService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -48,7 +49,7 @@ public class PatientController {
     }
 
     @PostMapping("/patients")
-    public ResponseEntity<PatientDAO> createPatient(@RequestBody PatientDAO patient, BindingResult result) {
+    public ResponseEntity<PatientDAO> createPatient(@Valid @RequestBody PatientDAO patient, BindingResult result) {
         log.info("Received request : create patient");
 
         if(result.hasErrors()) {
@@ -66,9 +67,8 @@ public class PatientController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
-    @PatchMapping("/patients/{id}")
-    public ResponseEntity<PatientDAO> updatePatient(@PathVariable("id") Integer id, @RequestBody PatientDAO patient, BindingResult result) {
+    @PutMapping("/patients/{id}")
+    public ResponseEntity<PatientDAO> updatePatient(@PathVariable("id") Integer id, @Valid @RequestBody PatientDAO patient, BindingResult result) {
         log.info("Received request : update patient");
 
         if(result.hasErrors()) {

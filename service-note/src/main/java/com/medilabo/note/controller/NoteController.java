@@ -3,6 +3,7 @@ package com.medilabo.note.controller;
 import com.medilabo.note.dao.NoteDAO;
 import com.medilabo.note.exception.NoteNotFoundException;
 import com.medilabo.note.service.NoteService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -58,11 +59,16 @@ public class NoteController {
     }
 
     @PostMapping("/notes")
-    public ResponseEntity<NoteDAO> createNote(@RequestBody NoteDAO note, BindingResult result) {
+    public ResponseEntity<NoteDAO> createNote(@Valid @RequestBody NoteDAO note, BindingResult result) {
         log.info("Received request : create note");
 
         if(result.hasErrors()) {
             log.debug("Invalid request body for note creation, reason : invalid field " + result.getFieldError().getField());
+            return ResponseEntity.badRequest().build();
+        }
+
+        if(note.getPatientId() == null) {
+            log.debug("Invalid request body for note creation, reason : missing patientId field");
             return ResponseEntity.badRequest().build();
         }
 
@@ -77,8 +83,8 @@ public class NoteController {
         }
     }
 
-    @PatchMapping("/notes/{id}")
-    public ResponseEntity<NoteDAO> updateNote(@PathVariable("id") String id, @RequestBody NoteDAO note, BindingResult result) {
+    @PutMapping("/notes/{id}")
+    public ResponseEntity<NoteDAO> updateNote(@PathVariable("id") String id, @Valid @RequestBody NoteDAO note, BindingResult result) {
         log.info("Received request : update note");
 
         if(result.hasErrors()) {

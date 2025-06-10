@@ -1,17 +1,30 @@
 package com.medilabo.front.controller;
 
+import com.medilabo.front.bean.NoteBean;
 import com.medilabo.front.bean.PatientBean;
+import com.medilabo.front.bean.ReportBean;
 import com.medilabo.front.dao.PatientDAO;
 import com.medilabo.front.proxy.DiabetesRiskProxy;
 import com.medilabo.front.proxy.NoteServiceProxy;
 import com.medilabo.front.proxy.PatientServiceProxy;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@Slf4j
 @Controller
+@Component
 public class PatientController {
+    @Value("${server.redirection.host}")
+    private String redirectionHost;
+
     private final PatientServiceProxy patientServiceProxy;
 
     private final DiabetesRiskProxy diabetesRiskProxy;
@@ -33,31 +46,62 @@ public class PatientController {
 
     @GetMapping("/patients/inspect/{patientId}")
     public String patientInspectView(@PathVariable("patientId") Integer patientId, Model model) {
-        PatientBean patient = patientServiceProxy.getPatientById(patientId);
-        if(patient != null) {
-            // TODO : handle not found
+        PatientBean patient = this.getPatientById(patientId);
+        if(patient == null) {
+            return "patient/notfound";
         }
+
+        List<NoteBean> patientNotes = noteServiceProxy.getPatientNotes(patientId);
+        ReportBean patientReport = diabetesRiskProxy.getPatientDiabetesRiskReport(patientId);
 
         model.addAttribute("pageTitle", "Aperçu patient");
         model.addAttribute("patient", patient);
+        model.addAttribute("notes", patientNotes);
+        model.addAttribute("report", patientReport);
         return "patient/inspect";
     }
 
     @GetMapping("/patients/create")
-    public String createPatientNoteView(Model model) {
+    public String createPatientView(Model model) {
+        model.addAttribute("pageTitle", "Créer un patient");
+        model.addAttribute("patient", new PatientDAO());
+
         return "patient/create";
     }
 
     @PostMapping("/patients/create")
-    public String createPatient(@RequestBody PatientDAO note, BindingResult result, Model model) {
-        return "";
+    public String createPatient(@Valid @ModelAttribute("patient") PatientDAO body, BindingResult result, Model model) {
+        if(result.hasErrors()) {
+            log.debug("Invalid request body for patient creation, reason : invalid field " + result.getFieldError().getField());
+
+            model.addAttribute("pageTitle", "Créer un patient");
+            model.addAttribute("patient", body);
+            return "patient/create";
+        }
+
+        PatientBean createdBean = null;
+
+        try {
+            PatientBean bean = this.toBean(body);
+            createdBean = patientServiceProxy.createPatient(bean);
+        }
+        catch(Exception ex) {
+            log.debug("Failed to create patient, reason : " + ex.getMessage());
+
+            model.addAttribute("errorMessage", ex.getMessage());
+            model.addAttribute("pageTitle", "Créer un patient");
+            model.addAttribute("patient", body);
+            return "patient/create";
+        }
+
+        return "redirect:" + redirectionHost + "/service-front/patients/inspect/" + createdBean.getId().toString();
     }
 
     @GetMapping("/patients/update/{patientId}")
     public String updatePatientView(@PathVariable("patientId") Integer patientId, Model model) {
-        PatientBean patient = patientServiceProxy.getPatientById(patientId);
-        if(patient != null) {
-            // TODO : handle not found
+        PatientBean patient = this.getPatientById(patientId);
+        if(patient == null) {
+            return "patient/notfound";
         }
 
         model.addAttribute("pageTitle", "Modifier un patient");
@@ -65,8 +109,77 @@ public class PatientController {
         return "patient/update";
     }
 
-    @PatchMapping("/patients/update/{patientId}")
-    public String updatePatient(@PathVariable("patientId") Integer patientId, @RequestBody PatientDAO note, BindingResult result, Model model) {
-        return "";
+    @PostMapping("/patients/update/{patientId}")
+    public String updatePatient(@PathVariable("patientId") Integer patientId, @Valid @ModelAttribute("patient") PatientDAO body, BindingResult result, Model model) {
+        PatientBean patient = this.getPatientById(patientId);
+        if(patient == null) {
+            return "patient/notfound";
+        }
+
+        body.setId(patientId);
+
+        if(result.hasErrors()) {
+            log.debug("Invalid request body for patient update, reason : invalid field " + result.getFieldError().getField());
+
+            model.addAttribute("pageTitle", "Modifier un patient");
+            model.addAttribute("patient", body);
+            return "patient/update";
+        }
+
+        try {
+            PatientBean bean = this.toBean(body);
+            patientServiceProxy.patchPatient(patientId, bean);
+        }
+        catch(Exception ex) {
+            log.debug("Failed to update patient, reason : " + ex.getMessage());
+
+            model.addAttribute("pageTitle", "Modifier un patient");
+            model.addAttribute("patient", body);
+            model.addAttribute("errorMessage", ex.getMessage());
+            return "patient/update";
+        }
+
+        return "redirect:" + redirectionHost + "/service-front/patients/inspect/" + patientId.toString();
+    }
+
+    @GetMapping("/patients/delete/{patientId}")
+    public String deletePatient(@PathVariable("patientId") Integer patientId, Model model) {
+        PatientBean patient = this.getPatientById(patientId);
+        if(patient == null) {
+            return "patient/notfound";
+        }
+
+        try {
+            patientServiceProxy.deletePatient(patientId);
+        }
+        catch(Exception ex) {
+            log.error("Failed to delete patient, reason : " + ex.getMessage());
+        }
+
+        return "redirect:" + redirectionHost + "/service-front/patients";
+    }
+
+    private PatientBean toBean(PatientDAO dao) {
+        PatientBean bean = new PatientBean();
+
+        bean.setFirstName(dao.getFirstName());
+        bean.setLastName(dao.getLastName());
+        bean.setBirthDate(dao.getBirthDate());
+        bean.setGender(dao.getGender());
+        bean.setAddress(dao.getAddress());
+        bean.setPhoneNumber(dao.getPhoneNumber());
+
+        return bean;
+    }
+
+    private PatientBean getPatientById(Integer patientId) {
+        try {
+            return patientServiceProxy.getPatientById(patientId);
+        }
+        catch(Exception ex) {
+            log.debug("Failed to get patient by id " + patientId.toString() + ", reason : " + ex.getMessage());
+        }
+
+        return null;
     }
 }

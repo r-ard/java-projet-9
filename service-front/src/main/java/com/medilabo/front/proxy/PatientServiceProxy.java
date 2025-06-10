@@ -8,18 +8,18 @@ import java.util.List;
 
 @FeignClient(name = "service-patient", url = "${proxy.service.patient.url}")
 public interface PatientServiceProxy {
-    @GetMapping(value = "/patients/{id}")
+    @RequestMapping(method = RequestMethod.GET, value  = "/patients/{id}", consumes = "application/json")
     PatientBean getPatientById(@PathVariable("id") Integer id);
 
-    @GetMapping(value = "/patients")
+    @RequestMapping(method = RequestMethod.GET, value  = "/patients", consumes = "application/json")
     List<PatientBean> getPatients();
 
-    @PostMapping(value = "/patients")
+    @RequestMapping(method = RequestMethod.POST, value  = "/patients", consumes = "application/json")
     PatientBean createPatient(@RequestBody PatientBean patientBean);
 
-    @PatchMapping(value = "/patients/{id}")
+    @RequestMapping(method = RequestMethod.PUT, value  = "/patients/{id}", consumes = "application/json")
     PatientBean patchPatient(@PathVariable("id") Integer id, @RequestBody PatientBean patientBean);
 
-    @DeleteMapping(value = "/patients/{id}")
+    @RequestMapping(method = RequestMethod.DELETE, value  = "/patients/{id}", consumes = "application/json")
     PatientBean deletePatient(@PathVariable("id") Integer id);
 }

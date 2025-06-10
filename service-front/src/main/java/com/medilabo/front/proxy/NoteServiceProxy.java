@@ -8,18 +8,18 @@ import java.util.List;
 
 @FeignClient(name = "service-note", url = "${proxy.service.note.url}")
 public interface NoteServiceProxy {
-    @GetMapping(value = "/notes/{id}")
-    public NoteBean getNoteById(@PathVariable(name = "id") Integer id);
+    @RequestMapping(method = RequestMethod.GET, value  = "/notes/{id}", consumes = "application/json")
+    public NoteBean getNoteById(@PathVariable(name = "id") String id);
 
-    @PostMapping(value = "/notes")
+    @RequestMapping(method = RequestMethod.POST, value  = "/notes", consumes = "application/json")
     public NoteBean createNode(@RequestBody NoteBean note);
 
-    @PatchMapping(value = "/notes/{id}")
-    public NoteBean updateNote(@PathVariable(name = "id") Integer id, @RequestBody NoteBean note);
+    @RequestMapping(method = RequestMethod.PUT, value  = "/notes/{id}", consumes = "application/json")
+    public NoteBean updateNote(@PathVariable(name = "id") String id, @RequestBody NoteBean note);
 
-    @DeleteMapping(value = "/notes/{id}")
-    public NoteBean deleteNote(@PathVariable(name = "id") Integer id);
+    @RequestMapping(method = RequestMethod.DELETE, value  = "/notes/{id}", consumes = "application/json")
+    public NoteBean deleteNote(@PathVariable(name = "id") String id);
 
-    @GetMapping(value = "/patient-notes/{patientId}")
+    @RequestMapping(method = RequestMethod.GET, value  = "/patient-notes/{patientId}", consumes = "application/json")
     public List<NoteBean> getPatientNotes(@PathVariable(name = "patientId") Integer patientId);
 }

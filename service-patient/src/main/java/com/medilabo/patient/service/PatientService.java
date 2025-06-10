@@ -37,6 +37,7 @@ public class PatientService {
 
     public PatientDAO createPatient(PatientDAO dao) {
         Patient entity = toEntity(dao);
+        entity.setId(null);
         entity = patientRepository.save(entity);
         return toDAO(entity);
     }

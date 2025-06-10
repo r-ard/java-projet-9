@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{layout/head.html}"></head>
+    <body>
+        <div class="container p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1>Modifier un patient</h1>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</button>
+                </form>
+            </div>
+            <form th:action="@{|/service-front/patients/update/${patient.getId()}|}" th:object="${patient}" method="post" class="form-horizontal">
+                <div class="mb-3">
+                    <label for="lastName" class="form-label">Nom de famille</label>
+                    <input type="text" class="form-control" id="lastName" name="firstName" placeholder="Nom de famille" th:field="*{lastName}">
+                    <small class="error" th:errors="*{lastName}" th:if="${#fields.hasErrors('lastName')}"></small>
+                </div>
+                <div class="mb-3">
+                    <label for="firstName" class="form-label">Prénom</label>
+                    <input type="text" class="form-control" id="firstName" name="lastName" placeholder="Prénom" th:field="*{firstName}">
+                    <small class="error" th:errors="*{firstName}" th:if="${#fields.hasErrors('firstName')}"></small>
+                </div>
+                <div class="mb-3">
+                    <label for="birthDate" class="form-label">Date de naissance</label>
+                    <input type="date" class="form-control" id="birthDate" name="birthDate" th:field="*{birthDate}">
+                    <small class="error" th:errors="*{birthDate}" th:if="${#fields.hasErrors('birthDate')}"></small>
+                </div>
+                <div class="mb-3">
+                    <label for="gender" class="form-label">Genre</label>
+                    <select class="form-select" id="gender" name="gender" th:field="*{gender}">
+                        <option th:value="''" selected>Choisir le genre du patient</option>
+                        <option th:value="'F'" th:text="Femme"></option>
+                        <option th:value="'M'" th:text="Homme"></option>
+                    </select>
+                    <small class="error" th:errors="*{gender}" th:if="${#fields.hasErrors('gender')}"></small>
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Adresse postale</label>
+                    <input type="text" class="form-control" id="address" name="address" placeholder="Adresse postale" th:field="*{address}">
+                    <small class="error" th:errors="*{address}" th:if="${#fields.hasErrors('address')}"></small>
+                </div>
+                <div class="mb-5">
+                    <label for="phoneNumber" class="form-label">Numéro de téléphone</label>
+                    <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Numéro de téléphone" th:field="*{phoneNumber}">
+                    <small class="error" th:errors="*{phoneNumber}" th:if="${#fields.hasErrors('phoneNumber')}"></small>
+                </div>
+                <div class="text-center">
+                    <a class="btn btn-secondary me-2" th:href="@{|/service-front/patients/inspect/${patient.getId()}|}"><i class="fas fa-times me-2"></i>Annuler</a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check me-2"></i>
+                        <span>Modifier</span>
+                    </button>
+                </div>
+            </form>
+            <div th:replace="~{layout/error-message.html}"></div>
+        </div>
+        <script th:replace="~{layout/date-fixer.html}"></script>
+    </body>
+</html>
