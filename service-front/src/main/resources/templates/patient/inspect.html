@@ -62,7 +62,7 @@
                                 <input class="form-control w-20 me-2" type="text" th:value="${#temporals.format(note.getDate(), 'dd/MM/yyyy')}" disabled>
                                 <div class="d-flex flex-row align-items-end pl-2" style="gap: 4px;">
                                     <a class="btn btn-primary text-nowrap" th:href="@{|/service-front/notes/update/${note.getId()}|}"><i class="fas fa-edit me-2"></i>Modifier</a>
-                                    <a class="btn btn-danger text-nowrap" th:href="@{|/service-front/notes/delete/${note.getId()}|}"><i class="fas fa-delete me-2"></i>Delete</a>
+                                    <a class="btn btn-danger text-nowrap" th:href="@{|/service-front/notes/delete/${note.getId()}|}"><i class="fas fa-delete me-2"></i>Supprimer</a>
                                 </div>
                             </div>
                         </div>
