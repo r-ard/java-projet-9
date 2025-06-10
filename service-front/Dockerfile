@@ -27,7 +27,7 @@ COPY --from=build /build/target/*.jar app.jar
 ENV SPRING_PROFILES_ACTIVE=docker
 
 # Expose the server port
-EXPOSE 8761
+EXPOSE 8084
 
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]

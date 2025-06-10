@@ -11,4 +11,10 @@ public class AuthController {
         model.addAttribute("pageTitle", "Connexion");
         return "auth/login";
     }
+
+    @GetMapping("/")
+    public String indexView(Model model) {
+        model.addAttribute("pageTitle", "Acceuil");
+        return "index";
+    }
 }

@@ -1,4 +1,4 @@
-package com.medilabo.service_patient;
+package com.medilabo.patient;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

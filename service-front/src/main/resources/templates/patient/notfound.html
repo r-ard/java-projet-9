@@ -3,12 +3,7 @@
     <head th:replace="~{layout/head.html}"></head>
     <body>
         <div class="container p-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1>Fiche patient</h1>
-                <form th:action="@{/logout}" method="post">
-                    <button type="submit" class="btn btn-danger"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</button>
-                </form>
-            </div>
+            <div th:replace="~{layout/navbar.html}"></div>
             <div class="row d-flex justify-content-between">
                 <h1>Patient non trouvé !</h1>
                 <a class="btn btn-success me-3" th:href="@{/service-front/patients}">Liste patients</a>
