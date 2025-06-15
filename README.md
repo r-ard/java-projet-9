@@ -85,6 +85,10 @@ Les base de données du projet ont été conçue selon les principes de la norme
 
 Voici les directives appliquées au sein de l'application
 
+
+#### Base de données
+- Application de la norme 3NF, cela permet de réduire les redondances de données, limitant ainsi l’espace de stockage nécessaire, la bande passante réseau et donc la consommation énergitique globale.
+
 #### Dockerisation
 - Utilisation d'image Docker légère, exemple avec l'utilisation de l'image `eclipse-temurin:17-jre-alpine` pour le run.
 - Dockerfile avec de multiples étapes de "build" afin d'avoir une image finale plus légère.
@@ -106,4 +110,4 @@ Voici quelques suggestions GreenCode à appliquer afin d'améliorer l'applicatio
 - Ajouter un système de cache API entre les microservices.
 
 #### Architecture du projet
-- Vu l'empleur du projet il serait possible et pertinent d'un point de vue "GreenCode" de passer à une architecture monolithique afin de limité la complexité de code de d'achitecture, la consommation de ressources et le coût en infrastructure.
+- Vu l'empleur actuel du projet il serait possible et pertinent d'un point de vue "GreenCode" de passer à une architecture monolithique afin de limité la complexité de code de d'achitecture, la consommation de ressources et le coût en infrastructure.

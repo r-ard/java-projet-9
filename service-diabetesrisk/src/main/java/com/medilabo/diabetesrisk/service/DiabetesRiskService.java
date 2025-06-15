@@ -55,34 +55,52 @@ public class DiabetesRiskService {
     protected ReportDAO getReportAsYoung(String gender, List<String> triggeredWords) {
         int triggeredAmount = triggeredWords.size();
 
-        String reportDescription = "Le patient est " + (gender.equals("F") ? "une femme" : "un homme") + " agé(e) de moins de 30 ans et a " + triggeredAmount + " termes déclancheurs.";
+        String reportDescription = DiabetesRiskService.generateReportDescription(gender, triggeredAmount);
 
         if((gender.equals("F") && triggeredAmount >= 7) || (gender.equals("M") && triggeredAmount >= 5)) {
-            return new ReportDAO(ReportRisk.EARLY_ONSET, reportDescription, triggeredWords);
+            String targetAmount = "?";
+
+            if(gender.equals("F")) {
+                targetAmount = String.valueOf(7);
+            }
+            else if(gender.equals("M")) {
+                targetAmount = String.valueOf(5);
+            }
+
+            return new ReportDAO(ReportRisk.EARLY_ONSET, reportDescription.replace("{}", targetAmount), triggeredWords);
         }
         else if((gender.equals("F") && triggeredAmount >= 4) || (gender.equals("M") && triggeredAmount >= 3)) {
-            return new ReportDAO(ReportRisk.IN_DANGER, reportDescription, triggeredWords);
+            String targetAmount = "?";
+
+            if(gender.equals("F")) {
+                targetAmount = String.valueOf(4);
+            }
+            else if(gender.equals("M")) {
+                targetAmount = String.valueOf(3);
+            }
+
+            return new ReportDAO(ReportRisk.IN_DANGER, reportDescription.replace("{}", targetAmount), triggeredWords);
         }
 
-        return new ReportDAO(ReportRisk.NONE, reportDescription, triggeredWords);
+        return new ReportDAO(ReportRisk.NONE, reportDescription.replace("{}", String.valueOf(0)), triggeredWords);
     }
 
     protected ReportDAO getReportAsAdult(String gender, List<String> triggeredWords) {
         int triggeredAmount = triggeredWords.size();
 
-        String reportDescription = "Le patient est " + (gender.equals("F") ? "une femme" : "un homme") + " agé(e) de plus de 30 ans et a " + triggeredAmount + " termes déclancheurs.";
+        String reportDescription = DiabetesRiskService.generateReportDescription(gender, triggeredAmount);
 
         if(triggeredAmount >= 8) {
-            return new ReportDAO(ReportRisk.EARLY_ONSET, reportDescription, triggeredWords);
+            return new ReportDAO(ReportRisk.EARLY_ONSET, reportDescription.replace("{}", String.valueOf(8)), triggeredWords);
         }
         else if(triggeredAmount >= 6) {
-            return new ReportDAO(ReportRisk.IN_DANGER, reportDescription, triggeredWords);
+            return new ReportDAO(ReportRisk.IN_DANGER, reportDescription.replace("{}", String.valueOf(6)), triggeredWords);
         }
         else if(triggeredAmount >= 2) {
-            return new ReportDAO(ReportRisk.BORDERLINE, reportDescription, triggeredWords);
+            return new ReportDAO(ReportRisk.BORDERLINE, reportDescription.replace("{}", String.valueOf(2)), triggeredWords);
         }
 
-        return new ReportDAO(ReportRisk.NONE, reportDescription, triggeredWords);
+        return new ReportDAO(ReportRisk.NONE, reportDescription.replace("{}", String.valueOf(0)), triggeredWords);
     }
 
     protected List<String> getTriggeredWordsOfNotes(List<NoteBean> notes) {
@@ -94,8 +112,25 @@ public class DiabetesRiskService {
         List<String> propertiesTriggereableWords = this.getPropertiesTriggereableWords();
 
         for(NoteBean note : notes) {
+            // Clean HTML characters
             String cleanedContent = StringUtils.getHTMLStringContent(note.getContent());
 
+            // Normalize to ascii
+            cleanedContent = StringUtils.normalizeToAscii(cleanedContent);
+
+            // Put it to lowercase
+            cleanedContent = cleanedContent.toLowerCase();
+
+            for(String triggereableWord : propertiesTriggereableWords) {
+                if(!cleanedContent.contains(triggereableWord.toLowerCase())) {
+                    continue;
+                }
+
+                triggeredWords.add(triggereableWord);
+            }
+
+            /* Old method
+            // Explode string to words by using " ", ",", ";"
             String[] explodedContent = cleanedContent.split("[ ,;]+");
             for(String contentWord : explodedContent) {
                 String loweredWord = contentWord.toLowerCase();
@@ -106,6 +141,7 @@ public class DiabetesRiskService {
 
                 triggeredWords.add(loweredWord);
             }
+             */
         }
 
         return triggeredWords;
@@ -113,6 +149,10 @@ public class DiabetesRiskService {
 
     protected List<String> getPropertiesTriggereableWords() {
         String[] explodedProperties = this.diabetesRiskTriggereableWords.split(",");
-        return Arrays.stream(explodedProperties).map(word -> word.toLowerCase().trim()).toList();
+        return Arrays.stream(explodedProperties).map(word -> word.trim()).toList();
+    }
+
+    private static String generateReportDescription(String gender, int triggeredAmount) {
+        return "Le patient est " + (gender.equals("F") ? "une femme" : "un homme") + " agé(e) de plus de 30 ans et a {} termes déclancheurs ou plus, en l'occurence " + triggeredAmount + " termes.";
     }
 }

@@ -2,8 +2,6 @@ services:
   eureka-server:
     image: eureka-server
     build: ./eureka-server
-    ports:
-      - "8761:8761"
     restart: unless-stopped
 
   gateway-service:
@@ -24,8 +22,6 @@ services:
   patient-service:
     image: patient-service
     build: ./service-patient
-    ports:
-      - "8081:8081"
     restart: unless-stopped
     depends_on:
       - eureka-server
@@ -39,8 +35,6 @@ services:
   note-service:
     image: note-service
     build: ./service-note
-    ports:
-      - "8083:8083"
     restart: unless-stopped
     depends_on:
       - eureka-server
@@ -52,8 +46,6 @@ services:
   diabetes-risk-service:
     image: diabetes-risk-service
     build: ./service-diabetesrisk
-    ports:
-      - "8084:8084"
     restart: unless-stopped
     depends_on:
       - eureka-server
@@ -63,8 +55,6 @@ services:
   front-service:
     image: front-service
     build: ./service-front
-    ports:
-      - "8082:8082"
     restart: unless-stopped
     depends_on:
       - eureka-server
@@ -78,8 +68,6 @@ services:
   mysql-db:
     image: mysql:8
     container_name: mysql-db
-    ports:
-      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_DB_PASSWORD}
       MYSQL_DATABASE: medilabo
@@ -92,8 +80,6 @@ services:
   mongo-db:
     image: mongo:latest
     container_name: mongo-db
-    ports:
-      - "27018:27017"
     environment:
       MONGO_INITDB_DATABASE: medilabo
     restart: always
