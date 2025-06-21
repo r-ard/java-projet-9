@@ -103,12 +103,12 @@ Voici quelques suggestions GreenCode à appliquer afin d'améliorer l'applicatio
 #### Optimisation du front-end
 - Passer à un framework front-end (ex: React, Angular) afin de ne pas effectuer de re-rendu des vues inutile par le back-end.
 
-#### Optimisation base de donnée
-- Choisir uniquement un type de base de donnée afin d'héberger nos données uniquement sur un seul serveur afin de limité impacte écologique.
+#### Optimisation base de données
+- Choisir uniquement un type de base de données afin d'héberger nos données uniquement sur un seul serveur afin de limiter l'impact écologique.
 
 #### Compression et caching
 - Ajouter un système de compression HTTP (ex: GZIP) entre les microservices, voir même entre le service front-end et le client.
 - Ajouter un système de cache API entre les microservices.
 
 #### Architecture du projet
-- Vu l'empleur actuel du projet il serait possible et pertinent d'un point de vue "GreenCode" de passer à une architecture monolithique afin de limité la complexité de code de d'achitecture, la consommation de ressources et le coût en infrastructure.
+- Vu l'ampleur actuel du projet il serait possible et pertinent d'un point de vue "GreenCode" de passer à une architecture monolithique afin de limiter la complexité de code de d'achitecture, la consommation de ressources et le coût en infrastructure.
