@@ -39,9 +39,10 @@ MediLabo est une solution composée de plusieurs microservices permettant la ges
 
 ## Lancement via Docker-Compose
 
-1. **Construire les images** : Executer la commande `docker-compose build`.
-2. **Lancer les services** : Executer la commande `docker-compose up`.
-3. **Connectez vous au frontend** : Via l'url `http://localhost:8080`.
+1. **Créer le .env** : Cloner le .env.example via cette commande : `cp .env.example .env`.
+2. **Construire les images** : Executer la commande `docker-compose build`.
+3. **Lancer les services** : Executer la commande `docker-compose up`.
+4. **Connectez vous au frontend** : Via l'url `http://localhost:8080`.
 
 ## Utilisateur test
 

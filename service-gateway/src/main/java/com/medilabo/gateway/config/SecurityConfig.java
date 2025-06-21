@@ -31,12 +31,34 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Règles :
+     *
+     * - Désactivation de la protection CSRF (afin de faciliter les appels API et l'authentification).
+     *
+     * - Autorisation d’accès public à certaines ressources :
+     *     - /service-front/login : page de connexion et route de connexion post
+     *     - /service-front/style.css : style css
+     *
+     * - Tous les autres endpoints nécessitent une authentification.
+     *
+     * - Configuration de l’authentification :
+     *     - En cas de succès, l’utilisateur est redirigé vers /service-front/patients.
+     *     - En cas d’échec, l’utilisateur est redirigé vers la page de connexion.
+     *     - Les connexions réussies sont enregistrées dans les logs avec le nom de l’utilisateur.
+     *     - Les échecs de connexion sont également enregistrés.
+     *
+     * - Configuration de la déconnexion :
+     *     - L’URL de déconnexion est /logout.
+     *     - Après la déconnexion, l’utilisateur est redirigé vers la page de connexion.
+     *
+     */
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) throws Exception {
         http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchangeSpec -> exchangeSpec
-                        .pathMatchers("/service-front/login", "/login", "/service-front/style.css").permitAll()
+                        .pathMatchers("/service-front/login", "/service-front/style.css").permitAll()
                         .anyExchange().authenticated()
                 )
                 .formLogin(form -> form
