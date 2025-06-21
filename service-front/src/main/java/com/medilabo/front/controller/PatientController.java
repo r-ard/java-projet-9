@@ -3,7 +3,7 @@ package com.medilabo.front.controller;
 import com.medilabo.front.bean.NoteBean;
 import com.medilabo.front.bean.PatientBean;
 import com.medilabo.front.bean.ReportBean;
-import com.medilabo.front.dao.PatientDAO;
+import com.medilabo.front.dto.PatientDTO;
 import com.medilabo.front.proxy.DiabetesRiskProxy;
 import com.medilabo.front.proxy.NoteServiceProxy;
 import com.medilabo.front.proxy.PatientServiceProxy;
@@ -64,13 +64,13 @@ public class PatientController {
     @GetMapping("/patients/create")
     public String createPatientView(Model model) {
         model.addAttribute("pageTitle", "Créer un patient");
-        model.addAttribute("patient", new PatientDAO());
+        model.addAttribute("patient", new PatientDTO());
 
         return "patient/create";
     }
 
     @PostMapping("/patients/create")
-    public String createPatient(@Valid @ModelAttribute("patient") PatientDAO body, BindingResult result, Model model) {
+    public String createPatient(@Valid @ModelAttribute("patient") PatientDTO body, BindingResult result, Model model) {
         if(result.hasErrors()) {
             log.debug("Invalid request body for patient creation, reason : invalid field " + result.getFieldError().getField());
 
@@ -110,7 +110,7 @@ public class PatientController {
     }
 
     @PostMapping("/patients/update/{patientId}")
-    public String updatePatient(@PathVariable("patientId") Integer patientId, @Valid @ModelAttribute("patient") PatientDAO body, BindingResult result, Model model) {
+    public String updatePatient(@PathVariable("patientId") Integer patientId, @Valid @ModelAttribute("patient") PatientDTO body, BindingResult result, Model model) {
         PatientBean patient = this.getPatientById(patientId);
         if(patient == null) {
             return "patient/notfound";
@@ -159,7 +159,7 @@ public class PatientController {
         return "redirect:" + redirectionHost + "/service-front/patients";
     }
 
-    private PatientBean toBean(PatientDAO dao) {
+    private PatientBean toBean(PatientDTO dao) {
         PatientBean bean = new PatientBean();
 
         bean.setFirstName(dao.getFirstName());

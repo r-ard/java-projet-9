@@ -1,8 +1,6 @@
-package com.medilabo.front.dao;
+package com.medilabo.front.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +11,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class NoteDAO {
+public class NoteDTO {
     private String id;
 
     @NotEmpty(message = "Content is mandatory")

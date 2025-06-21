@@ -1,14 +1,15 @@
-package com.medilabo.gateway.security;
+package com.medilabo.front.security;
 
-import com.medilabo.gateway.model.User;
-import com.medilabo.gateway.repository.UserRepository;
+import com.medilabo.front.entity.User;
+import com.medilabo.front.repository.UserRepository;
 import jakarta.annotation.Nullable;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import reactor.core.publisher.Mono;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
+
 public class CustomUserDetails implements UserDetails {
     private UserRepository userRepository;
 
@@ -25,8 +26,8 @@ public class CustomUserDetails implements UserDetails {
 
     @Nullable
     public User getUser() {
-        Mono<User> user = userRepository.findById(this.userId);
-        return user.block();
+        Optional<User> user = userRepository.findById(this.userId);
+        return user.orElse(null);
     }
 
     public int getId() { return userId; }

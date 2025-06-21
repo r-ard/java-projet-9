@@ -15,9 +15,8 @@ services:
       - mysql-db
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_R2DBC_URL: r2dbc:mysql://mysql-db:3306/medilabo
-      SPRING_R2DBC_USERNAME: ${MYSQL_DB_USERNAME}
-      SPRING_R2DBC_PASSWORD: ${MYSQL_DB_PASSWORD}
+      GATEWAY_USERNAME: ${GATEWAY_USERNAME}
+      GATEWAY_PASSWORD: ${GATEWAY_PASSWORD}
 
   patient-service:
     image: patient-service
@@ -42,6 +41,8 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATA_MONGODB_URI: mongodb://mongo-db:27017/medilabo
+      GATEWAY_USERNAME: ${GATEWAY_USERNAME}
+      GATEWAY_PASSWORD: ${GATEWAY_PASSWORD}
   
   diabetes-risk-service:
     image: diabetes-risk-service
@@ -51,6 +52,8 @@ services:
       - eureka-server
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      GATEWAY_USERNAME: ${GATEWAY_USERNAME}
+      GATEWAY_PASSWORD: ${GATEWAY_PASSWORD}
   
   front-service:
     image: front-service
@@ -64,6 +67,11 @@ services:
       - diabetes-risk-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_DB_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/medilabo_administration
+      GATEWAY_USERNAME: ${GATEWAY_USERNAME}
+      GATEWAY_PASSWORD: ${GATEWAY_PASSWORD}
   
   mysql-db:
     image: mysql:8

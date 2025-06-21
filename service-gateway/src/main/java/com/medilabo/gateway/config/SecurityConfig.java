@@ -4,15 +4,22 @@ import com.medilabo.gateway.service.CustomUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationFailureHandler;
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler;
+import org.springframework.security.web.server.context.ServerSecurityContextRepository;
+import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
@@ -22,13 +29,21 @@ import java.net.URI;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService) {
-
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public ReactiveAuthenticationManager reactiveAuthenticationManager(CustomUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        UserDetailsRepositoryReactiveAuthenticationManager authenticationManager = new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
+        authenticationManager.setPasswordEncoder(passwordEncoder);
+        return authenticationManager;
+    }
+
+    @Bean
+    public ServerSecurityContextRepository securityContextRepository() {
+        return new WebSessionServerSecurityContextRepository();
     }
 
     /**
@@ -54,33 +69,30 @@ public class SecurityConfig {
      *
      */
     @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) throws Exception {
+    public SecurityWebFilterChain securityWebFilterChain(
+            ServerHttpSecurity http,
+            ReactiveAuthenticationManager authManager,
+            ServerSecurityContextRepository securityContextRepository
+    ) throws Exception {
         http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(exchangeSpec -> exchangeSpec
-                        .pathMatchers("/service-front/login", "/service-front/style.css").permitAll()
+                .authorizeExchange(exchange -> exchange
+                        .pathMatchers("/service-front/**", "/", "/service-front/").permitAll()
                         .anyExchange().authenticated()
                 )
-                .formLogin(form -> form
-                        .loginPage("/service-front/login")
-                        .authenticationSuccessHandler((webFilterExchange, authentication) -> {
-
-                            log.info("Login success for : {}", authentication.getName());
-                            return new RedirectServerAuthenticationSuccessHandler("/service-front/patients")
-                                    .onAuthenticationSuccess(webFilterExchange, authentication);
+                .authenticationManager(authManager)
+                .securityContextRepository(securityContextRepository)
+                .exceptionHandling(exceptionHandlingSpec -> exceptionHandlingSpec
+                        .authenticationEntryPoint((swe, e) -> {
+                            swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                            return swe.getResponse().setComplete();
                         })
-                        .authenticationFailureHandler((webFilterExchange, exception) -> {
-                            log.info("Login failed");
-                            return new RedirectServerAuthenticationFailureHandler("/service-front/login")
-                                    .onAuthenticationFailure(webFilterExchange, exception);
+                        .accessDeniedHandler((swe, e) -> {
+                            swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+                            return swe.getResponse().setComplete();
                         })
                 )
-                .logout(logout -> {
-                    RedirectServerLogoutSuccessHandler logoutSuccessHandler = new RedirectServerLogoutSuccessHandler();
-                    logoutSuccessHandler.setLogoutSuccessUrl(URI.create("/service-front/login"));
-                    logout.logoutUrl("/logout")
-                            .logoutSuccessHandler(logoutSuccessHandler);
-                });
+                .logout(logoutSpec -> logoutSpec.disable());
 
         return http.build();
     }

@@ -1,7 +1,9 @@
-USE `medilabo`;
+USE `medilabo_administration`;
 
 -- Insert a test user in database, with username 'TestUser' and password 'azerty123'.
 INSERT INTO `users` VALUES (1, 'John', 'Doe', 'TestUser', '$2y$10$dMw0bMRmFQq8JhZOlho2u.k6aEnLHowatgA.hgtEsJD2L8qPQij9K');
+
+USE `medilabo`;
 
 -- Insert some test patients in database.
 INSERT INTO `patients` VALUES

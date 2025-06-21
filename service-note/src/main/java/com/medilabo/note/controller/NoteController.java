@@ -1,7 +1,9 @@
 package com.medilabo.note.controller;
 
+import com.medilabo.note.bean.PatientBean;
 import com.medilabo.note.dao.NoteDAO;
 import com.medilabo.note.exception.NoteNotFoundException;
+import com.medilabo.note.proxy.PatientServiceProxy;
 import com.medilabo.note.service.NoteService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +19,12 @@ public class NoteController {
 
     private final NoteService noteService;
 
+    private final PatientServiceProxy patientServiceProxy;
 
-    public NoteController(NoteService noteService) {
+
+    public NoteController(NoteService noteService, PatientServiceProxy patientServiceProxy) {
         this.noteService = noteService;
+        this.patientServiceProxy = patientServiceProxy;
     }
 
     @GetMapping("/status")
@@ -67,9 +72,19 @@ public class NoteController {
             return ResponseEntity.badRequest().build();
         }
 
-        if(note.getPatientId() == null) {
+        Integer patientId = note.getPatientId();
+
+        if(patientId == null) {
             log.debug("Invalid request body for note creation, reason : missing patientId field");
             return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            PatientBean patientBean = patientServiceProxy.getPatientById(patientId);
+            if(patientBean == null) throw new Exception("Patient id not found (" + patientId.toString() + ")");
+        }
+        catch(Exception ex) {
+            log.error("Failed to create note for non existant patient (" + patientId.toString() + "), reason : " + ex.getMessage());
         }
 
         try {
