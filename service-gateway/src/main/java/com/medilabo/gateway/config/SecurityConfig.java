@@ -76,6 +76,7 @@ public class SecurityConfig {
     ) throws Exception {
         http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .httpBasic(httpBasicSpec -> {})
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers("/service-front/**", "/", "/service-front/").permitAll()
                         .anyExchange().authenticated()
