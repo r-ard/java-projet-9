@@ -94,7 +94,7 @@ public class PatientController {
             return "patient/create";
         }
 
-        return "redirect:" + redirectionHost + "/service-front/patients/inspect/" + createdBean.getId().toString();
+        return "redirect:" + redirectionHost + "/patients/inspect/" + createdBean.getId().toString();
     }
 
     @GetMapping("/patients/update/{patientId}")
@@ -139,7 +139,7 @@ public class PatientController {
             return "patient/update";
         }
 
-        return "redirect:" + redirectionHost + "/service-front/patients/inspect/" + patientId.toString();
+        return "redirect:" + redirectionHost + "/patients/inspect/" + patientId.toString();
     }
 
     @GetMapping("/patients/delete/{patientId}")
@@ -156,7 +156,7 @@ public class PatientController {
             log.error("Failed to delete patient, reason : " + ex.getMessage());
         }
 
-        return "redirect:" + redirectionHost + "/service-front/patients";
+        return "redirect:" + redirectionHost + "/patients";
     }
 
     private PatientBean toBean(PatientDTO dao) {

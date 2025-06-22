@@ -121,27 +121,15 @@ public class DiabetesRiskService {
             // Put it to lowercase
             cleanedContent = cleanedContent.toLowerCase();
 
+            // For each word in the properties triggereable words, check if it is present in the cleaned content
+            // If it is, add it to the triggered words list
             for(String triggereableWord : propertiesTriggereableWords) {
-                if(!cleanedContent.contains(triggereableWord.toLowerCase())) {
+                if(triggeredWords.contains(triggereableWord) || !cleanedContent.contains(triggereableWord.toLowerCase())) {
                     continue;
                 }
 
                 triggeredWords.add(triggereableWord);
             }
-
-            /* Old method
-            // Explode string to words by using " ", ",", ";"
-            String[] explodedContent = cleanedContent.split("[ ,;]+");
-            for(String contentWord : explodedContent) {
-                String loweredWord = contentWord.toLowerCase();
-
-                if(!propertiesTriggereableWords.contains(loweredWord) || triggeredWords.contains(loweredWord)) {
-                    continue;
-                }
-
-                triggeredWords.add(loweredWord);
-            }
-             */
         }
 
         return triggeredWords;

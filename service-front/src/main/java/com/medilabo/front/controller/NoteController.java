@@ -75,7 +75,7 @@ public class NoteController {
             return "note/create";
         }
 
-        return "redirect:" + redirectionHost + "/service-front/patients/inspect/" + patientId.toString();
+        return "redirect:" + redirectionHost + "/patients/inspect/" + patientId.toString();
     }
 
     @GetMapping("/notes/update/{noteId}")
@@ -122,7 +122,7 @@ public class NoteController {
             return "note/update";
         }
 
-        return "redirect:" + redirectionHost + "/service-front/patients/inspect/" + note.getPatientId().toString();
+        return "redirect:" + redirectionHost + "/patients/inspect/" + note.getPatientId().toString();
     }
 
     @GetMapping("/notes/delete/{noteId}")
@@ -134,7 +134,7 @@ public class NoteController {
 
         noteServiceProxy.deleteNote(noteId);
 
-        return "redirect:" + redirectionHost + "/service-front/patients/inspect/" + note.getPatientId().toString();
+        return "redirect:" + redirectionHost + "/patients/inspect/" + note.getPatientId().toString();
     }
 
     private NoteBean toBean(NoteDTO dao) {

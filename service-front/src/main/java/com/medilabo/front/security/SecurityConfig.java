@@ -1,6 +1,7 @@
 package com.medilabo.front.security;
 
 import com.medilabo.front.services.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -13,6 +14,9 @@ import org.springframework.stereotype.Component;
 @Configuration
 @Component
 public class SecurityConfig {
+    @Value("${server.redirection.host}")
+    private String redirectionHost;
+
     private final CustomUserDetailsService userDetailsService;
 
     public SecurityConfig(CustomUserDetailsService userDetailsService) {
@@ -38,19 +42,25 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/style.css", "date-input-fixer.js").permitAll()
+                        .requestMatchers("/", "/login", "/style.css", "/date-input-fixer.js").permitAll()
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendRedirect(redirectionHost + "/login");
+                        })
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .usernameParameter("username")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/service-front/patients", true)
+                        .failureUrl(redirectionHost + "/login?error")
+                        .defaultSuccessUrl(redirectionHost + "/patients", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/service-front/login?logout")
+                        .logoutSuccessUrl(redirectionHost + "/login?logout")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         //.logoutRequestMatcher(new AntPathMatcher("/logout"))

@@ -72,6 +72,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/medilabo_administration
       GATEWAY_USERNAME: ${GATEWAY_USERNAME}
       GATEWAY_PASSWORD: ${GATEWAY_PASSWORD}
+      APP_URL: ${APP_URL}
   
   mysql-db:
     image: mysql:8

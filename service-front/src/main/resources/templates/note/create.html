@@ -4,7 +4,7 @@
     <body>
         <div class="container p-4">
             <div th:replace="~{layout/navbar.html}"></div>
-            <form th:action="@{|/service-front/notes/create/${patient.getId()}|}" th:object="${note}"  method="post" class="form-horizontal">
+            <form th:action="@{|/notes/create/${patient.getId()}|}" th:object="${note}"  method="post" class="form-horizontal">
                 <div class="mb-3">
                     <label for="content" class="form-label">Contenu</label>
                     <textarea class="form-control" id="content" name="content" placeholder="Contenu"></textarea>
@@ -16,9 +16,8 @@
                     <small class="error" th:errors="*{date}" th:if="${#fields.hasErrors('date')}"></small>
                 </div>
                 <div class="text-center">
-                    <a class="btn btn-secondary me-2" th:href="@{|/service-front/patients/inspect/${patient.getId()}}"><i class="fas fa-times me-2"></i>Annuler</a>
+                    <a class="btn btn-secondary me-2" th:href="@{|/patients/inspect/${patient.getId()}}">Annuler</a>
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-check me-2"></i>
                         <span>Valider</span>
                     </button>
                 </div>

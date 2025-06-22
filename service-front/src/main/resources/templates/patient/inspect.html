@@ -7,8 +7,8 @@
             <div class="row d-flex justify-content-between">
                 <div class="col-4">
                     <div class="text-center my-5">
-                        <a class="btn btn-secondary me-2" href="/service-front/patients"><i class="fas fa-times me-2"></i>Retour à la liste</a>
-                        <a class="btn btn-primary" th:href="@{|/service-front/patients/update/${patient.getId()}|}"><i class="fas fa-edit me-2"></i>Modifier informations</a>
+                        <a class="btn btn-secondary me-2" th:href="@{/patients}">Retour à la liste</a>
+                        <a class="btn btn-primary" th:href="@{|/patients/update/${patient.getId()}|}">Modifier informations</a>
                     </div>
                     <div class="mb-3">
                         <label for="lastname" class="form-label">Nom de famille</label>
@@ -47,7 +47,7 @@
                 </div>
                 <div class="col-7">
                     <div class="my-5">
-                        <a class="btn btn-success d-block" th:href="@{|/service-front/notes/create/${patient.getId()}|}">Créer une nouvelle note</a>
+                        <a class="btn btn-success d-block" th:href="@{|/notes/create/${patient.getId()}|}">Créer une nouvelle note</a>
                     </div>
                     <p th:if="${notes.size() == 0}" class="h5 text-center mt-5">Pas de note</p>
                     <div th:each="note : ${notes}">
@@ -56,8 +56,8 @@
                             <div class="w-100 d-flex flex-row align-items-end justify-content-between">
                                 <input class="form-control w-20 me-2" type="text" th:value="${#temporals.format(note.getDate(), 'dd/MM/yyyy')}" disabled>
                                 <div class="d-flex flex-row align-items-end pl-2" style="gap: 4px;">
-                                    <a class="btn btn-primary text-nowrap" th:href="@{|/service-front/notes/update/${note.getId()}|}">Modifier</a>
-                                    <a class="btn btn-danger text-nowrap" th:href="@{|/service-front/notes/delete/${note.getId()}|}">Supprimer</a>
+                                    <a class="btn btn-primary text-nowrap" th:href="@{|/notes/update/${note.getId()}|}">Modifier</a>
+                                    <a class="btn btn-danger text-nowrap" th:href="@{|/notes/delete/${note.getId()}|}">Supprimer</a>
                                 </div>
                             </div>
                         </div>
