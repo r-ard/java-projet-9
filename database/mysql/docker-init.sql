@@ -40,6 +40,9 @@ INSERT INTO `patients` VALUES
 
 -- Les données exportées n'étaient pas sélectionnées.
 
+CREATE DATABASE IF NOT EXISTS `medilabo_administration` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `medilabo_administration`;
+
 -- Listage de la structure de table medilabo. users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int NOT NULL AUTO_INCREMENT,

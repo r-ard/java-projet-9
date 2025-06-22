@@ -4,7 +4,7 @@
     <body>
         <div class="container p-4">
             <div th:replace="~{layout/navbar.html}"></div>
-            <form th:action="@{|/service-front/notes/update/${note.getId()}|}" th:object="${note}" method="post" class="form-horizontal">
+            <form th:action="@{|/notes/update/${note.getId()}|}" th:object="${note}" method="post" class="form-horizontal">
                 <div class="mb-3">
                     <label for="content" class="form-label">Contenu</label>
                     <textarea class="form-control" id="content" placeholder="Contenu" th:field="*{content}"></textarea>
@@ -16,7 +16,7 @@
                     <small class="error" th:errors="*{date}" th:if="${#fields.hasErrors('date')}"></small>
                 </div>
                 <div class="text-center">
-                    <a class="btn btn-secondary me-2" th:href="@{|/service-front/patients/inspect/${patientId}}">Annuler</a>
+                    <a class="btn btn-secondary me-2" th:href="@{|/patients/inspect/${patientId}}">Annuler</a>
                     <button type="submit" class="btn btn-success">
                         <span>Modifier</span>
                     </button>

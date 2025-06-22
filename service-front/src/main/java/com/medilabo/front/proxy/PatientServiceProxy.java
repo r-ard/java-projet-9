@@ -1,12 +1,13 @@
 package com.medilabo.front.proxy;
 
 import com.medilabo.front.bean.PatientBean;
+import com.medilabo.front.config.FeignClientConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "service-patient", url = "${proxy.service.patient.url}")
+@FeignClient(name = "service-patient", url = "${proxy.service.patient.url}", configuration = FeignClientConfig.class)
 public interface PatientServiceProxy {
     @RequestMapping(method = RequestMethod.GET, value  = "/patients/{id}", consumes = "application/json")
     PatientBean getPatientById(@PathVariable("id") Integer id);

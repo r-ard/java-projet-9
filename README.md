@@ -51,6 +51,27 @@ Pour accéder à l'application vous pouvez utiliser l'utilisateur par défaut pr
 - **Username** : `TestUser`
 - **Password** : `azerty123`
 
+## Variables d'environnement
+
+Pour faire fonctionner l'application vous devez créer un .env (*.env* exemple disponible `.env.example`)
+
+Commande pour créer le fichier *.env* : `cp .env.example .env`
+
+Contenu :
+
+```sh
+# Credentials MySQL
+MYSQL_DB_USERNAME=root
+MYSQL_DB_PASSWORD=password
+
+# Identifiants d'authentification Gateway entre service
+GATEWAY_USERNAME=username
+GATEWAY_PASSWORD=password
+
+# URL de l'application (gestion front)
+APP_URL=http://localhost:8080
+```
+
 ---
 
 # Normalisation des données (3NF)

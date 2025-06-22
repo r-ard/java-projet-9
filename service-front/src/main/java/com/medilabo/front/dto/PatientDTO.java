@@ -1,6 +1,5 @@
-package com.medilabo.front.dao;
+package com.medilabo.front.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -14,7 +13,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatientDAO {
+public class PatientDTO {
     private Integer id;
 
     @NotEmpty(message = "First name is mandatory")

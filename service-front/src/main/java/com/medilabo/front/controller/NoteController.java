@@ -2,7 +2,7 @@ package com.medilabo.front.controller;
 
 import com.medilabo.front.bean.NoteBean;
 import com.medilabo.front.bean.PatientBean;
-import com.medilabo.front.dao.NoteDAO;
+import com.medilabo.front.dto.NoteDTO;
 import com.medilabo.front.proxy.NoteServiceProxy;
 import com.medilabo.front.proxy.PatientServiceProxy;
 import jakarta.validation.Valid;
@@ -39,13 +39,13 @@ public class NoteController {
 
         model.addAttribute("pageTitle", "Créer une note");
         model.addAttribute("patient", patient);
-        model.addAttribute("note", new NoteDAO());
+        model.addAttribute("note", new NoteDTO());
 
         return "note/create";
     }
 
     @PostMapping("/notes/create/{patientId}")
-    public String createPatientNote(@PathVariable("patientId") Integer patientId, @Valid @ModelAttribute("note") NoteDAO body, BindingResult result, Model model) {
+    public String createPatientNote(@PathVariable("patientId") Integer patientId, @Valid @ModelAttribute("note") NoteDTO body, BindingResult result, Model model) {
         PatientBean patient = this.getPatientById(patientId);
         if(patient == null) {
             return "patient/notfound";
@@ -75,7 +75,7 @@ public class NoteController {
             return "note/create";
         }
 
-        return "redirect:" + redirectionHost + "/service-front/patients/inspect/" + patientId.toString();
+        return "redirect:" + redirectionHost + "/patients/inspect/" + patientId.toString();
     }
 
     @GetMapping("/notes/update/{noteId}")
@@ -93,7 +93,7 @@ public class NoteController {
     }
 
     @PostMapping("/notes/update/{noteId}")
-    public String updateNote(@PathVariable("noteId") String noteId, @Valid @ModelAttribute("note") NoteDAO body, BindingResult result, Model model) {
+    public String updateNote(@PathVariable("noteId") String noteId, @Valid @ModelAttribute("note") NoteDTO body, BindingResult result, Model model) {
         NoteBean note = this.getNoteById(noteId);
         if(note == null) {
             return "note/notfound";
@@ -122,7 +122,7 @@ public class NoteController {
             return "note/update";
         }
 
-        return "redirect:" + redirectionHost + "/service-front/patients/inspect/" + note.getPatientId().toString();
+        return "redirect:" + redirectionHost + "/patients/inspect/" + note.getPatientId().toString();
     }
 
     @GetMapping("/notes/delete/{noteId}")
@@ -134,10 +134,10 @@ public class NoteController {
 
         noteServiceProxy.deleteNote(noteId);
 
-        return "redirect:" + redirectionHost + "/service-front/patients/inspect/" + note.getPatientId().toString();
+        return "redirect:" + redirectionHost + "/patients/inspect/" + note.getPatientId().toString();
     }
 
-    private NoteBean toBean(NoteDAO dao) {
+    private NoteBean toBean(NoteDTO dao) {
         NoteBean bean = new NoteBean();
 
         bean.setContent(dao.getContent());

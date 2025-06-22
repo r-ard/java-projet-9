@@ -21,7 +21,7 @@
 
         try {
             let parsedDate = new Date(rawAttrValue);
-            if(!parsedDate || isNaN(parsedDate)) parsedDate = parseDate(parsedDate);
+            if(!parsedDate || isNaN(parsedDate)) parsedDate = parseDate(rawAttrValue);
 
             if(!parsedDate || isNaN(parsedDate)) throw new Error("Invalid date format");
 

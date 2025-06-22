@@ -4,7 +4,7 @@
     <body>
         <div class="container p-4">
             <div th:replace="~{layout/navbar.html}"></div>
-            <form th:action="@{/service-front/patients/create}" th:object="${patient}" method="post" class="form-horizontal">
+            <form th:action="@{/patients/create}" th:object="${patient}" method="post" class="form-horizontal">
                 <div class="mb-3">
                     <label for="lastname" class="form-label">Nom de famille</label>
                     <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Nom de famille">
@@ -40,7 +40,7 @@
                     <small class="error" th:errors="*{phoneNumber}" th:if="${#fields.hasErrors('phoneNumber')}"></small>
                 </div>
                 <div class="text-center">
-                    <a class="btn btn-secondary me-2" th:href="@{/service-front/patient-list}">Annuler</a>
+                    <a class="btn btn-secondary me-2" th:href="@{/patient-list}">Annuler</a>
                     <button type="submit" class="btn btn-success">
                         <span>Valider</span>
                     </button>

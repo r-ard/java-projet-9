@@ -19,14 +19,14 @@
                     <td th:text="${patient.getLastName()}"></td>
                     <td th:text="${#temporals.format(patient.getBirthDate(), 'dd/MM/yyyy')}"></td>
                     <td class="btn-td">
-                        <a class="btn btn-success me-3" th:href="@{|/service-front/patients/inspect/${patient.getId()}|}">Consulter</a>
-                        <a class="btn btn-primary me-3" th:href="@{|/service-front/patients/update/${patient.getId()}|}">Modifier</a>
-                        <a class="btn btn-danger" th:href="@{|/service-front/patients/delete/${patient.getId()}|}">Supprimer</a>
+                        <a class="btn btn-success me-3" th:href="@{|/patients/inspect/${patient.getId()}|}">Consulter</a>
+                        <a class="btn btn-primary me-3" th:href="@{|/patients/update/${patient.getId()}|}">Modifier</a>
+                        <a class="btn btn-danger" th:href="@{|/patients/delete/${patient.getId()}|}">Supprimer</a>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="4" class="text-center">
-                        <a href="/service-front/patients/create">
+                        <a th:href="@{/patients/create}">
                             <button type="button" class="btn btn-secondary">Créer un nouveau patient</button>
                         </a>
                     </td>
@@ -35,7 +35,7 @@
             </table>
             <div th:if="${patients.size() == 0}">
                 <p class="h5" >Il n'y a aucun patient.</p>
-                <a href="/service-front/patients/create" class="my-5">
+                <a th:href="@{/patients/create}" class="my-5">
                     <button type="button" class="btn btn-secondary">Créer un nouveau patient</button>
                 </a>
             </div>

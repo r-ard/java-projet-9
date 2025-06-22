@@ -2,7 +2,7 @@
 
 Ce service constitue l’**interface utilisateur** de l’application MediLabo en utilisant le moteur de rendu `Thymeleaf`.
 
-Le service est exposé sur le port `8084` et est disponible dans le service gateway via le préfix `/service-front/`.
+Le service est exposé sur le port `8084` et est disponible dans le service gateway via le préfix `/`.
 
 ---
 ## Endpoints

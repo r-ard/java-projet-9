@@ -1,12 +1,13 @@
 package com.medilabo.front.proxy;
 
 import com.medilabo.front.bean.NoteBean;
+import com.medilabo.front.config.FeignClientConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "service-note", url = "${proxy.service.note.url}")
+@FeignClient(name = "service-note", url = "${proxy.service.note.url}", configuration = FeignClientConfig.class)
 public interface NoteServiceProxy {
     @RequestMapping(method = RequestMethod.GET, value  = "/notes/{id}", consumes = "application/json")
     public NoteBean getNoteById(@PathVariable(name = "id") String id);

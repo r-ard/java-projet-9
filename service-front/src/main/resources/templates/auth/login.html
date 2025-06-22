@@ -5,10 +5,9 @@
         <div class="auth-wrapper">
             <div class="login-card p-4">
                 <div class="login-title mb-4 text-center px-3 py-2">
-                    <i class="fas fa-medkit me-2"></i>
-                    MediLabo
+                    MediLabo Solutions
                 </div>
-                <form th:action="@{/service-front/login}" action="#" class="form" method="post">
+                <form th:action="@{/login}" action="#" class="form" method="post">
                     <div class="input-group">
                         <input type="text" name="username" class="form-control" placeholder="Nom d'identifiant" required autofocus>
                     </div>
@@ -20,6 +19,9 @@
                         <button type="submit" class="btn btn-primary mt-4 px-4">Connexion</button>
                     </div>
                 </form>
+            </div>
+            <div class="mt-3 px-3">
+                <div th:if="${logoutMessage}" class="alert alert-success" th:text="${logoutMessage}"></div>
             </div>
         </div>
     </body>
